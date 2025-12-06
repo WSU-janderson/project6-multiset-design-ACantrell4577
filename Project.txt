@@ -93,14 +93,9 @@ This can be done by creating a new array and returning that, which has the items
 and the new methods would simply be the call method and deserialize().
 
 
-6. UML Diagram / Abstraction Boundary
+UML Diagram
 
 ADD IN LATER
-
-Create a UML diagram to show the public interface(methods available to users) and private internal members (data and helper methods)
-
-Clearly distinguish between Public and private variables and explain why certain things are hidden
-
 
 Trade-off Analysis
 
@@ -160,3 +155,9 @@ This design is encapsulated from the user as the only thing they can do with it 
 The tables are abstracted as well because the features that they will see wont show them the complexity behind the scenes. When they look for the unique items the code and the process are hidden,
 the only thing they will see is the unique items that are available from the location. In a hash table the user dosent need to see all of the has codes so with some reformmating into an array,
 the data can be easily provided to the user.
+
+
+Citations
+
+“7.1: Time Complexity and Common Uses of Hash Tables.” Engineering LibreTexts, Libretexts, 10 Mar. 2021, eng.libretexts.org/Courses/Folsom_Lake_College/CISP_430%3A_Data_Structures_(Aljuboori)/07%3A_Hash_Tables/7.01%3A_Time_complexity_and_common_uses_of_hash_tables. 
+“AVL Tree Data Structure.” GeeksforGeeks, 11 Oct. 2025, www.geeksforgeeks.org/dsa/introduction-to-avl-tree/. 
