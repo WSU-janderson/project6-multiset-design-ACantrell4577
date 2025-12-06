@@ -41,32 +41,64 @@ The weight function just checks the number of filled buckets and compares them t
 and not get too clogged with data signalling the rebalance operation to fire. This is also another operation that the user will never see happen so the time complexity can be a little more neglected.
 
 
-4. Set Operations
-Design one or two set-like operations that are meaningful within your game world
+Set Operations
 
-Possible operations
-Union_with()    Combine two inventories or loot tables
-Intersection_with() Find items shared between two inventories
-difference_With()   Items a player has that another dosent
-Symetric_difference_with()  Items unique to each inventory
+    A functional set-like operation would be an item lookup that would be a unique_Drop(string) function. This function would take in some kind of data, for example a location,
+and return a list of loot drops that are unique to that location. This would be a more time complex operation as it would compare all items with all items in all locations.
+This would lead to a time complexity of O(n^3). This is less than ideal, but this could also be saved by doing it when the game launches or in an update that would save it in a table.
+The table could then be viewed by the user when they wanted to and this function would have a time complexity of O(n) as it would only have to display the table.
+This wouldn't have to manipulate any data though just itterate through the desired location and then at each bucket check the other locations for a bucket with the same item id.
+if none are found add the item to the unique table.
 
-For each of the choices Explain
-    -What it accomplishes in gameplay
-    -How it manipulates the data structure
-    -Its conceptual complexity and any relevant edge Cases
 
-5. Extention Feature
-Invent one new capability or behavior of your multiset
-Examples
-    -top_k*(size_t k) returns the k most frequent items
-    -Remove_n(size_t n) removes and returns the n arbitrary items
-    -serialize()/deserialize() Saves or loads the multiset to or from a file
-    -craftRecipie() - consumes ingrdients to create a new items
+vector<string, string> uniqueTable;
 
-Describe what new data or methods you would add and explain why this feature adds value within
-the game scenario.
+for(all items in location){
+    currentItem = location[x]
+    unique = true
+    for(all locations){
+
+        for(all items in nextLocation){
+            testItem = nextLocation[z]
+                
+            if(currentItem == testItem){
+            unique = false
+            }
+        }
+    }
+    if(unique){
+        add currentItem and location to unique table
+    }
+    else{
+        do nothing
+    }
+
+}
+
+return uniqueTable
+
+    The psudocode above gives a small example of how this code would look itterating through all items in all locations and doing a simple check in each to determine if the item is unique.
+if anoter Item is not found then the item is added to the table and once all locations have been visited the table is returned. This would take a lot of time though as stated previously,
+but this can be mediated with it being done as the game launches or in an update and then the table is stored in a file to be accessed easily later.
+
+Extention Feature
+
+    A possible extention to the multiset would be the ability to deserialize() the tables. The ability for the user to load the loot table of a location would allow them to have more information available to them.
+In games where loot tables are the desciding factor, its much nicer for the data to be readilly available without the use of outside sources. People with two monitors will normally have a games 
+wiki up on another screen so that they can acess information easier and this would mitigate the need for such tools. This wuoldn't require that much of a difference in the code.
+The program would have a method called by the user to request the locations loot table. The method would deserialize the data into a readable formato for the user and display the table.
+This can be done by creating a new array and returning that, which has the items that can be dropped from the location. The only new data that would need to be created is the array,
+and the new methods would simply be the call method and deserialize().
 
 6. UML Diagram / Abstraction Boundary
+
+    LootTable
+------------------------
+    -Private
+------------------------
+    +Public
+
+
 Create a UML diagram to show the public interface(methods available to users) and private internal members (data and helper methods)
 
 Clearly distinguish between Public and private variables and explain why certain things are hidden
