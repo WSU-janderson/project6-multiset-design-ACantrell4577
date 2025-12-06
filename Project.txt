@@ -1,1 +1,87 @@
+Introduction
 
+    My design is to model a loot table that contains item numbers to identify the item and the quantity that will be dropped,
+using a HashTable<string, unsigned int> model. Hash tables have good lookup capabilities and when you are killing monsters
+or finishing a mission having the ability to quickly descide what items need to be dropped is important.
+
+
+Design Philosophy
+
+    The main priority when it comes to a loot table is speed. A search function on a hash table is quick and essentially O(1), in most scenarios.
+This system would be used in the game so the client of this multiset would be the game system itself and the developers, and the users would be the players.
+Because of this readability is less important as the user will not really need to know the full extent of what is going on in the background, just the client,
+and at most they will only need the ability to see what can be dropped and the chances of the drop. This system also allows the extention of the table as need be.
+The table insertion can be a little inefficient, but at the same time this will most likely be done in an update and not done live so the player would not experience this issue at all.
+The process would be simple, a creature dies or a mission completes, for this example we can say it simulates a random dice roll. This will cause some numbers to be rolled more than others.
+Then using that random number the program can hast the table to find the item and quantity stored there. This can be uset for quest completions as the variablity of the drops is usually a lot lower.
+For smaller monsters that will have more variance in the items dropped a single random number can be generated and hashed into the monsters table to find the item.
+If the variance of smaller monsters is required a random number generator can be used to generate the number of items the monster will drop in a range after the item has been located in the hash table.
+Because of the speed that a hash table can search for the item that needs to be dropped, I feel it is the best fit for the basis of the systems multiset.
+
+Core Operations
+
+    The core functions of the hash table are fairly simple. Aside from the creation of the hash table the search function is a plainly obvious one as the multisets function is to do a lookup. It simply uses a random number to use to hash through,
+the table to find the desired item drop. This is almost the entire reason for using a hash table as the search function will likely function with a time complexity of O(1).
+This isnt always the case though as there will edge cases that change the time complexity though. The first case is if the hash function takes us throught the entire table causing a worst case scenario of O(n).
+Loot tables arnt massive in size so this isnt a massive issue and will more often then not cause a complexity of O(1).
+
+    There is also an add and a remove function. These have similar time complexities to the search function being around O(1). The add operation adds a loot drop to the table and the remove function does the opposite,
+removing an item from the table. Both functions also have similar edge cases as the search function, remove could have to hash through the entire table to find the key that it is looking for or not find it at all.
+The add function would also have the possibility to require to itterate throught the entire table looing for an open bucket. The hast table would facilitate this to not happen because of how hash tables want to maintain their weight.
+These functions although would not take time complexity into consideration like search would because these would be done in an update and this the user would not have seen it.
+
+    The add functions time complexity does have another edge case though that causes another shift in time complexity and that is the rebalancing of the hash table. This causes a massive change in the time complexity of the add function.
+This is because the rebalancing function has a time complexity of O(n + 1) because it requires to create a whole new hash table and then fill it with the previous hash table's contents.
+Luckily though, this function has no edge cases as it only doubles the size of the hash table and there will never be another possibility. This is the biggest constraint that a hash table has when it comes to the core operations though.
+Because a hash table has a set size it cant grow and shrink as needed but loot tables dont grow or shrink in real time, thus once again this becomes something changed in an update and not seen by the user.
+
+    Because of the rebalancing function there is another function that is required. The weight function "weighs" the table to determine how likely an insertion of an item would cause a collision.
+This cuts down on the time required for adding so you are a not going to search all 8 buckets in a table, only about half would actually be searched because it would have been rebalanced by then.
+The weight function just checks the number of filled buckets and compares them to the total bucket count thus the time complexity is O(1). This operation is required for hash tables because it allows the table to grow
+and not get too clogged with data signalling the rebalance operation to fire. This is also another operation that the user will never see happen so the time complexity can be a little more neglected.
+
+
+4. Set Operations
+Design one or two set-like operations that are meaningful within your game world
+
+Possible operations
+Union_with()    Combine two inventories or loot tables
+Intersection_with() Find items shared between two inventories
+difference_With()   Items a player has that another dosent
+Symetric_difference_with()  Items unique to each inventory
+
+For each of the choices Explain
+    -What it accomplishes in gameplay
+    -How it manipulates the data structure
+    -Its conceptual complexity and any relevant edge Cases
+
+5. Extention Feature
+Invent one new capability or behavior of your multiset
+Examples
+    -top_k*(size_t k) returns the k most frequent items
+    -Remove_n(size_t n) removes and returns the n arbitrary items
+    -serialize()/deserialize() Saves or loads the multiset to or from a file
+    -craftRecipie() - consumes ingrdients to create a new items
+
+Describe what new data or methods you would add and explain why this feature adds value within
+the game scenario.
+
+6. UML Diagram / Abstraction Boundary
+Create a UML diagram to show the public interface(methods available to users) and private internal members (data and helper methods)
+
+Clearly distinguish between Public and private variables and explain why certain things are hidden
+
+7. Trade-off Analysis
+Compare chosen data structure with at least one alternative
+
+Explain in a short paragraph why you didnt choose the alternative structure
+
+Include a pro-con table
+
+8.Alt Design Sketch
+A short paragraph explaining what would have to have been done differently with the other data structure
+
+9. Evaluation Plan
+How would you test the design if it were implemented
+
+10. Conclusion/reflection
