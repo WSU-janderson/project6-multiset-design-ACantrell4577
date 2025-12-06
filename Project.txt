@@ -18,6 +18,7 @@ For smaller monsters that will have more variance in the items dropped a single 
 If the variance of smaller monsters is required a random number generator can be used to generate the number of items the monster will drop in a range after the item has been located in the hash table.
 Because of the speed that a hash table can search for the item that needs to be dropped, I feel it is the best fit for the basis of the systems multiset.
 
+
 Core Operations
 
     The core functions of the hash table are fairly simple. Aside from the creation of the hash table the search function is a plainly obvious one as the multisets function is to do a lookup. It simply uses a random number to use to hash through,
@@ -81,6 +82,7 @@ return uniqueTable
 if anoter Item is not found then the item is added to the table and once all locations have been visited the table is returned. This would take a lot of time though as stated previously,
 but this can be mediated with it being done as the game launches or in an update and then the table is stored in a file to be accessed easily later.
 
+
 Extention Feature
 
     A possible extention to the multiset would be the ability to deserialize() the tables. The ability for the user to load the loot table of a location would allow them to have more information available to them.
@@ -90,30 +92,71 @@ The program would have a method called by the user to request the locations loot
 This can be done by creating a new array and returning that, which has the items that can be dropped from the location. The only new data that would need to be created is the array,
 and the new methods would simply be the call method and deserialize().
 
+
 6. UML Diagram / Abstraction Boundary
 
-    LootTable
-------------------------
-    -Private
-------------------------
-    +Public
-
+ADD IN LATER
 
 Create a UML diagram to show the public interface(methods available to users) and private internal members (data and helper methods)
 
 Clearly distinguish between Public and private variables and explain why certain things are hidden
 
-7. Trade-off Analysis
-Compare chosen data structure with at least one alternative
 
-Explain in a short paragraph why you didnt choose the alternative structure
+Trade-off Analysis
 
-Include a pro-con table
+    The clear alternative to the hash table would have been the AVL tree, but there were some reasons that I felt the hash table was a better fit.
+The hash table is a little faster on overage for a search method in the scale that a game would use it for. most loot tables are small and dont have hundreds of items in them.
+The AVL Tree has a worst case scenario of O(log n) which is much better than o(n) but for the scale that I am using the hash table is faster simply on average.
+The avl tree would also be quicker to update as well which is worth mentioning. Adding or removing items would also be quicker in the worst case scenario than the hash table,
+but with the use of updates that games have I felt this distinction was redundant. AVL trees are faster overall but with the speed of the search being key in a loot table I felt hash tables were a better suit.
 
-8.Alt Design Sketch
-A short paragraph explaining what would have to have been done differently with the other data structure
+Hash Table
+-----------------------------------------------------------
+PROS:
+Faster Search on average
+Dosent need to be balanced like AVL Tree
+Logical structure is followed more than a readable one
 
-9. Evaluation Plan
-How would you test the design if it were implemented
+CONS:
+Slower overall
+Fixed size
+Less readable
 
-10. Conclusion/reflection
+
+AVL Tree
+----------------------------------------------------------
+PROS:
+Faster overall
+Variable size
+More readable
+Follows a more human logical structure
+
+CONS:
+Requires balancing on each add/remove
+Slower search on average
+
+    In this program I prioritize the speed of the search specifically so while the AVL tree is tantilizing I feel the hash table serves this purpose better.
+
+Alt Design Sketch
+
+    With an AVl tree the program would no longer need the rebalancing structure that the hash table follows and would be replaced with a rotational rebalancing as an AVL tree must be balanced differently.
+The searching of the tree would also have to change. with the hash table we can hash the numbers even though they arnt the same but with the AVL tree the loot generated would have to be of the same key.
+This would be the most challenging part as unless all of the key values are kept together it can be difficult to manage what loot should be dropped. An example of how to handle this would be,
+creating an array with all of the keys and then generating a number from 1-n where n is the total number of keys. Then search the tree for the specified key-value pair.
+This would disrupt all of the unique items functions as well as the search would be far more time complex then it is with the current system.
+
+Evaluation Plan
+
+    The design could be tested in many ways, but the way I would test it is by forcing completion of quest which should have quest loot and defeat of multiple monsters which should also have their own tables.
+This way I could quickly test to make sure the loot is being dropped at proper rates and by the correct things. I woudl output some kind of test values to confirm where they came from and how much as well to double check the data.
+Then after those are all correct, the best way to truly test is to send the game out to beta testers to get a full range of input to confirm that everything is working as planned.
+
+Conclusion
+
+    I believe the hash table was correct choice because of the rate of which the search can be done on average. On average the search function is faster but the main trade off is that,
+there is a possibility that the operations are slower. This was ok to me because the loot tables shouldn't slow down that much because of the size of the tables.
+The other functions that would also be slower could be handled and managed when the player was unaware like during an update or during the booting of the game.
+This design is encapsulated from the user as the only thing they can do with it is query the tables and never change any of the values as they arnt public.
+The tables are abstracted as well because the features that they will see wont show them the complexity behind the scenes. When they look for the unique items the code and the process are hidden,
+the only thing they will see is the unique items that are available from the location. In a hash table the user dosent need to see all of the has codes so with some reformmating into an array,
+the data can be easily provided to the user.
